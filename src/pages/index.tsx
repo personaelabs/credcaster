@@ -59,7 +59,7 @@ const CustomSearchBox = (props: any) => {
 
   return (
     <Input
-      placeholder="Search a trait (e.g. TOP 1% DEX trader)"
+      placeholder="Search a trait (e.g. Farcaster OG)"
       onChange={(e) => {
         refine(e.target.value);
       }}
