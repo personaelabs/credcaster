@@ -1,10 +1,12 @@
-import { InstantSearch, Highlight, useSearchBox, InfiniteHits } from 'react-instantsearch';
+import { InstantSearch, InfiniteHits } from 'react-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import warpcastIcon from '../components/warpcastIcon.svg';
 import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import RefinementList from '@/components/RefinementList';
+import { useState } from 'react';
+import { Separator } from '@/components/ui/separator';
+import { CATEGORIES, CHAIN_META, Category } from '@/lib/traits';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
 
@@ -16,13 +18,19 @@ const trimUsername = (username: string): string => {
   return trimed;
 };
 
-function Hit(props: any) {
-  const hit = props.hit;
+type HitProps = {
+  hit: any;
+  category: Category;
+  trait: string;
+};
 
-  const matchedTraits = props.hit._highlightResult?.traits.filter(
-    (trait: any) => trait.matchLevel !== 'none',
-  );
-  hit._highlightResult.traits = matchedTraits;
+function Hit(props: HitProps) {
+  const hit = props.hit;
+  const category = props.category;
+  const trait = props.trait;
+
+  const matchedNFTs = hit.nfts.filter((nft: any) => nft.collection === trait);
+  const matchedChains = hit.usedChains.filter((chain: string) => chain === trait);
 
   return (
     <Card>
@@ -36,12 +44,41 @@ function Hit(props: any) {
           </div>
           <div className="w-1/5 flex justify-end">
             <a href={`https://warpcast.com/${hit.username}`} target="_blank">
-              <Image src={warpcastIcon} alt="warpcast icon"></Image>
+              <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>
             </a>
           </div>
         </CardTitle>
         <CardDescription>
-          <Highlight hit={hit} attribute="traits" />
+          {category.key === 'nfts.collection' && (
+            <div>
+              <p>{trait}</p>
+              <div className="grid grid-cols-6">
+                {matchedNFTs.map((nft: any, i: number) => (
+                  <div key={i} className="py-2">
+                    <Avatar>
+                      <AvatarImage
+                        src={nft.media}
+                        alt={nft.name}
+                        className="w-12 object-cover"
+                      ></AvatarImage>
+                    </Avatar>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {category.key === 'usedChains' && (
+            <div>
+              {matchedChains.map((chain: any, i: number) => (
+                <div key={i} className="flex py-4 flex-row gap-2">
+                  <Image src={CHAIN_META[chain].logo} width={20} height={20} alt={chain} />
+                  <span>{CHAIN_META[chain].name} user</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <Separator></Separator>
         </CardDescription>
       </CardHeader>
       <CardContent className="gap-8">
@@ -54,22 +91,13 @@ function Hit(props: any) {
   );
 }
 
-const CustomSearchBox = (props: any) => {
-  const { query, refine, clear } = useSearchBox(props);
-
-  return (
-    <Input
-      placeholder="Search a trait (e.g. Farcaster OG)"
-      onChange={(e) => {
-        refine(e.target.value);
-      }}
-      value={query}
-      type="text"
-    />
-  );
-};
-
 export default function Home() {
+  // Category to search for
+  const [category, setCategory] = useState<Category>(CATEGORIES[0]);
+
+  // Trait to search for
+  const [trait, setTrait] = useState('');
+
   return (
     <main className="bg-[#EFEBEB]">
       <div className="p-8">
@@ -82,13 +110,16 @@ export default function Home() {
             searchClient={searchClient}
             indexName="traitcaster"
           >
-            <div className="mt-4 w-[300px] md:w-[600px]">
-              <CustomSearchBox></CustomSearchBox>
-            </div>
+            <RefinementList
+              category={category}
+              setCategory={setCategory}
+              trait={trait}
+              setTrait={setTrait}
+            />
             <div className="mt-4 w-[350px] md:w-[450px]">
               <InfiniteHits
                 showPrevious={false}
-                hitComponent={Hit}
+                hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
                 classNames={{
                   item: 'mt-4 ',
                 }}
