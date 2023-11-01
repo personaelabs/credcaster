@@ -35,25 +35,27 @@ const CategorySelector = (props: CategorySelectorProps) => {
 };
 
 type TraitSelectorProps = {
-  category: string;
+  category: Category;
   onTraitChange: (trait: string) => void;
   trait: string;
 };
 
 const TraitSelector = (props: TraitSelectorProps) => {
+  const { category, trait, onTraitChange } = props;
+
   const [open, setOpen] = useState(false);
   const { items, refine, searchForItems } = useRefinementList({
-    attribute: props.category,
+    attribute: category.key,
     limit: 50, // TODO: Add pagination
     showMoreLimit: 51,
   });
 
   useEffect(() => {
-    if (props.trait) {
+    if (trait) {
       // Refresh the result when the trait changes
-      refine(props.trait);
+      refine(trait);
     }
-  }, [props.trait, refine]);
+  }, [trait, refine]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -80,7 +82,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
                 key={i}
                 className="hover:bg-gray-50 hover:cursor-pointer p-4"
                 onClick={() => {
-                  props.onTraitChange(item.label);
+                  onTraitChange(item.label);
                   setOpen(false);
                 }}
               >
@@ -129,11 +131,7 @@ const RefinementList = (props: RefinementListProps) => {
         ></CategorySelector>
       </div>
       <div className="mt-4">
-        <TraitSelector
-          category={category.key}
-          trait={trait}
-          onTraitChange={setTrait}
-        ></TraitSelector>
+        <TraitSelector category={category} trait={trait} onTraitChange={setTrait}></TraitSelector>
       </div>
     </>
   );
