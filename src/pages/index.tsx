@@ -99,34 +99,32 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   return (
-    <main className="bg-[#EFEBEB]">
-      <div className="p-8">
-        <div className="flex justify-center mt-14">
-          <p className="text-indigo-500 text-3xl font-bold font-['Inter']">Traitcaster</p>
-        </div>
-        <div className="mt-4 flex flex-col items-center">
-          <InstantSearch
-            initialUiState={undefined}
-            searchClient={searchClient}
-            indexName="traitcaster"
-          >
-            <RefinementList
-              category={category}
-              setCategory={setCategory}
-              trait={trait}
-              setTrait={setTrait}
-            />
-            <div className="mt-4 w-[350px] md:w-[450px]">
-              <InfiniteHits
-                showPrevious={false}
-                hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
-                classNames={{
-                  item: 'mt-4 ',
-                }}
-              ></InfiniteHits>
-            </div>
-          </InstantSearch>
-        </div>
+    <main>
+      <div className="flex justify-center mt-14">
+        <p className="text-3xl font-bold font-['Inter']">CredddCast</p>
+      </div>
+      <div className="mt-4 flex flex-col items-center">
+        <InstantSearch
+          initialUiState={undefined}
+          searchClient={searchClient}
+          indexName="traitcaster"
+        >
+          <RefinementList
+            category={category}
+            setCategory={setCategory}
+            trait={trait}
+            setTrait={setTrait}
+          />
+          <div className="mt-4 w-[350px] md:w-[450px]">
+            <InfiniteHits
+              showPrevious={false}
+              hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
+              classNames={{
+                item: 'mt-4 ',
+              }}
+            ></InfiniteHits>
+          </div>
+        </InstantSearch>
       </div>
     </main>
   );
