@@ -31,7 +31,6 @@ function Hit(props: HitProps) {
   const trait = props.trait;
 
   const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
-  console.log({ matchedMints, mints, trait });
 
   return (
     <Card>
