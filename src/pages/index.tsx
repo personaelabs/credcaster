@@ -88,12 +88,7 @@ export default function Home() {
             searchClient={searchClient}
             indexName="traitcaster-mints"
           >
-            <RefinementList
-              category={category}
-              setCategory={setCategory}
-              trait={trait}
-              setTrait={setTrait}
-            />
+            <RefinementList trait={trait} setTrait={setTrait} />
             <div className="mt-4">
               <InfiniteHits
                 showPrevious={false}
