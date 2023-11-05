@@ -1,6 +1,6 @@
 import { InstantSearch, InfiniteHits } from 'react-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
@@ -80,7 +80,7 @@ export default function Home() {
     <main className="bg-[#EFEBEB]">
       <div className="p-8">
         <div className="flex justify-center mt-14">
-          <p className="text-indigo-500 text-3xl font-bold font-['Inter']">Traitcaster</p>
+          <p className="text-indigo-500 text-3xl font-bold font-['Inter']">Credcaster</p>
         </div>
         <div className="mt-4 flex flex-col items-center">
           <InstantSearch

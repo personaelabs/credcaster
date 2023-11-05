@@ -1,38 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useInstantSearch, useRefinementList } from 'react-instantsearch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectTrigger } from '@/components/ui/select';
 import CustomSearchBox from './CutomSearchBox';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { CATEGORIES, Category } from '@/lib/traits';
-
-type CategorySelectorProps = {
-  onChange: (category: string) => void;
-  value: string;
-};
-
-const CategorySelector = (props: CategorySelectorProps) => {
-  return (
-    <Select onValueChange={props.onChange} value={props.value}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a category" />
-      </SelectTrigger>
-      <SelectContent>
-        {CATEGORIES.map((category) => (
-          <SelectItem key={category.key} value={category.key}>
-            {category.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-};
 
 type TraitSelectorProps = {
   category: Category;
@@ -67,12 +39,12 @@ const TraitSelector = (props: TraitSelectorProps) => {
             }}
             className="w-[180px]"
           >
-            {props.trait || 'Select a trait'}
+            {props.trait || 'Choose creddd'}
           </SelectTrigger>
         </Select>
       </DialogTrigger>
       <DialogContent className="p-6 w-[350px] rounded-xl">
-        <h4 className="mt-4 mb-4 text-md font-medium leading-none">Select a trait</h4>
+        <h4 className="mt-4 mb-4 text-md font-medium leading-none">Choose creddd</h4>
         <CustomSearchBox search={searchForItems}> </CustomSearchBox>
         <Separator />
         <div className="h-[240px] mt-4 overflow-y-auto">
@@ -107,31 +79,26 @@ type RefinementListProps = {
 const RefinementList = (props: RefinementListProps) => {
   const { refresh, setIndexUiState, indexUiState } = useInstantSearch();
 
-  const { category, setCategory, trait, setTrait } = props;
+  const { trait, setTrait } = props;
 
   useEffect(() => {
     if (trait) {
       setIndexUiState(() => ({
         refinementList: {
-          [category.key]: [trait],
+          ['mints.title']: [trait],
         },
       }));
     }
-  }, [category.key, refresh, setIndexUiState, trait]);
+  }, [refresh, setIndexUiState, trait]);
 
   return (
     <>
-      <div>
-        <CategorySelector
-          value={category.key}
-          onChange={(key) => {
-            setTrait('');
-            setCategory(CATEGORIES.find((category) => category.key === key)!);
-          }}
-        ></CategorySelector>
-      </div>
       <div className="mt-4">
-        <TraitSelector category={category} trait={trait} onTraitChange={setTrait}></TraitSelector>
+        <TraitSelector
+          category={CATEGORIES[0]}
+          trait={trait}
+          onTraitChange={setTrait}
+        ></TraitSelector>
       </div>
     </>
   );
