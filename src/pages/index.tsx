@@ -1,11 +1,10 @@
 import { InstantSearch, InfiniteHits } from 'react-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
 import { useState } from 'react';
-import { Separator } from '@/components/ui/separator';
 import { CATEGORIES, Category } from '@/lib/traits';
 import { toIPFSGatewayUrl, toZoraUrl } from '@/lib/utils';
 
@@ -33,40 +32,39 @@ function Hit(props: HitProps) {
   const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex gap-8 flex-row justify-between">
-          <div className="flex items-center">
-            <Avatar className="mr-4">
-              <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
-            </Avatar>
-            <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
-          </div>
-          <div className="w-1/5 flex justify-end">
-            <a href={`https://warpcast.com/${hit.username}`} target="_blank">
-              <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>
-            </a>
-          </div>
-        </CardTitle>
-        <CardDescription>
-          <div className="p-4 grid grid-cols-3 gap-4">
-            {matchedMints.map((mint: any, i: number) => (
-              <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
-                <Image
-                  width={60}
-                  height={60}
-                  src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
-                  alt="avatar image"
-                ></Image>
-              </a>
-            ))}
-          </div>
-          <Separator></Separator>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="gap-8">
-        <p className="mt-4 text-slate-900 text-opacity-70">{hit.bio}</p>
-      </CardContent>
+    <Card className="grid grid-cols-10 bg-white p-2">
+      {/* 
+          1. small avatar image
+          2. name
+          3. creddd
+          4. social link
+      */}
+      <div className="col-span-1">
+        <Avatar className="mr-4">
+          <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
+        </Avatar>
+      </div>
+      <div className="col-span-3">
+        <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
+      </div>
+      <div className="col-span-5">
+        {matchedMints.map((mint: any, i: number) => (
+          <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
+            <Image
+              width={60}
+              height={60}
+              src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
+              alt="avatar image"
+            ></Image>
+          </a>
+        ))}
+      </div>
+      <div className="col-span-1">
+        {' '}
+        <a className="items-end" href={`https://warpcast.com/${hit.username}`} target="_blank">
+          <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
+        </a>
+      </div>
     </Card>
   );
 }
@@ -96,12 +94,12 @@ export default function Home() {
               trait={trait}
               setTrait={setTrait}
             />
-            <div className="mt-4 w-[350px] md:w-[450px]">
+            <div className="mt-4">
               <InfiniteHits
                 showPrevious={false}
                 hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
                 classNames={{
-                  item: 'mt-4 ',
+                  item: 'mt-2',
                 }}
               ></InfiniteHits>
             </div>
