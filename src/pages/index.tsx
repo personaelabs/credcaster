@@ -6,16 +6,17 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
-import { CATEGORIES, CHAIN_META, Category } from '@/lib/traits';
+import { CATEGORIES, Category } from '@/lib/traits';
+import { toIPFSGatewayUrl, toZoraUrl } from '@/lib/utils';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
 
-const trimUsername = (username: string): string => {
-  const trimed = username.substring(0, 20);
-  if (trimed.length < username.length) {
-    return trimed + '...';
+const trimDisplayName = (displayName: string): string => {
+  const trimmed = displayName.substring(0, 20);
+  if (trimmed.length < displayName.length) {
+    return trimmed + '...';
   }
-  return trimed;
+  return trimmed;
 };
 
 type HitProps = {
@@ -26,11 +27,10 @@ type HitProps = {
 
 function Hit(props: HitProps) {
   const hit = props.hit;
-  const category = props.category;
+  const mints = hit.mints;
   const trait = props.trait;
 
-  const matchedNFTs = hit.nfts.filter((nft: any) => nft.collection === trait);
-  const matchedChains = hit.usedChains.filter((chain: string) => chain === trait);
+  const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
 
   return (
     <Card>
@@ -40,7 +40,7 @@ function Hit(props: HitProps) {
             <Avatar className="mr-4">
               <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
             </Avatar>
-            <p className="text-[18px]">{trimUsername(hit.username)}</p>
+            <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
           </div>
           <div className="w-1/5 flex justify-end">
             <a href={`https://warpcast.com/${hit.username}`} target="_blank">
@@ -49,42 +49,22 @@ function Hit(props: HitProps) {
           </div>
         </CardTitle>
         <CardDescription>
-          {category.key === 'nfts.collection' && (
-            <div>
-              <p>{trait}</p>
-              <div className="grid grid-cols-6">
-                {matchedNFTs.map((nft: any, i: number) => (
-                  <div key={i} className="py-2">
-                    <Avatar>
-                      <AvatarImage
-                        src={nft.media}
-                        alt={nft.name}
-                        className="w-12 object-cover"
-                      ></AvatarImage>
-                    </Avatar>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {category.key === 'usedChains' && (
-            <div>
-              {matchedChains.map((chain: any, i: number) => (
-                <div key={i} className="flex py-4 flex-row gap-2">
-                  <Image src={CHAIN_META[chain].logo} width={20} height={20} alt={chain} />
-                  <span>{CHAIN_META[chain].name} user</span>
-                </div>
-              ))}
-            </div>
-          )}
-
+          <div className="p-4 grid grid-cols-3 gap-4">
+            {matchedMints.map((mint: any, i: number) => (
+              <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
+                <Image
+                  width={60}
+                  height={60}
+                  src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
+                  alt="avatar image"
+                ></Image>
+              </a>
+            ))}
+          </div>
           <Separator></Separator>
         </CardDescription>
       </CardHeader>
       <CardContent className="gap-8">
-        <p>
-          <b> 10,000 </b>followers
-        </p>
         <p className="mt-4 text-slate-900 text-opacity-70">{hit.bio}</p>
       </CardContent>
     </Card>
@@ -108,7 +88,7 @@ export default function Home() {
           <InstantSearch
             initialUiState={undefined}
             searchClient={searchClient}
-            indexName="traitcaster"
+            indexName="traitcaster-mints"
           >
             <RefinementList
               category={category}
