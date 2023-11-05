@@ -70,8 +70,6 @@ const TraitSelector = (props: TraitSelectorProps) => {
 };
 
 type RefinementListProps = {
-  category: Category;
-  setCategory: (category: Category) => void;
   trait: string;
   setTrait: (trait: string) => void;
 };
