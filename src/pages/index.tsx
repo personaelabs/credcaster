@@ -44,10 +44,10 @@ function Hit(props: HitProps) {
           <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
         </Avatar>
       </div>
-      <div className="col-span-3">
+      <div className="col-span-8 pt-2">
         <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
       </div>
-      <div className="col-span-5">
+      {/* <div className="col-span-5">
         {matchedMints.map((mint: any, i: number) => (
           <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
             <Image
@@ -58,8 +58,8 @@ function Hit(props: HitProps) {
             ></Image>
           </a>
         ))}
-      </div>
-      <div className="col-span-1">
+      </div> */}
+      <div className="col-span-1 pt-2">
         {' '}
         <a className="items-end" href={`https://warpcast.com/${hit.username}`} target="_blank">
           <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
@@ -77,10 +77,13 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   return (
-    <main className="bg-[#EFEBEB]">
+    <main className="bg-white">
       <div className="p-8">
         <div className="flex justify-center mt-14">
-          <p className="text-indigo-500 text-3xl font-bold font-['Inter']">Credcaster</p>
+          <label className="text-xl">Mintcaster</label>
+        </div>
+        <div>
+          <p className="text-center mt-4">Find farcasters by Zora mint.</p>
         </div>
         <div className="mt-4 flex flex-col items-center">
           <InstantSearch

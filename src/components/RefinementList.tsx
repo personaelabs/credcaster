@@ -39,15 +39,17 @@ const TraitSelector = (props: TraitSelectorProps) => {
             }}
             className="w-[180px]"
           >
-            {props.trait || 'Choose creddd'}
+            {props.trait || 'Choose mint'}
           </SelectTrigger>
         </Select>
       </DialogTrigger>
       <DialogContent className="p-6 w-[350px] rounded-xl">
-        <h4 className="mt-4 mb-4 text-md font-medium leading-none">Choose creddd</h4>
+        <h4 className="mt-4 mb-4 text-md font-medium leading-none">Choose mint</h4>
         <CustomSearchBox search={searchForItems}> </CustomSearchBox>
         <Separator />
         <div className="h-[240px] mt-4 overflow-y-auto">
+          {/* TODO: good items first, then everything else */}
+          {/* TODO: zora items labeled with [zora]? */}
           {items.map((item, i) => (
             <>
               <div
