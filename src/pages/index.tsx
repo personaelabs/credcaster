@@ -33,18 +33,12 @@ function Hit(props: HitProps) {
 
   return (
     <Card className="grid grid-cols-10 bg-white p-2">
-      {/* 
-          1. small avatar image
-          2. name
-          3. creddd
-          4. social link
-      */}
-      <div className="col-span-1">
+      <div className="col-span-2 sm:col-span-1">
         <Avatar className="mr-4">
           <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
         </Avatar>
       </div>
-      <div className="col-span-8 pt-2 ml-1">
+      <div className="col-span-7 sm:col-span-8 pt-2 ml-1">
         <p className="text-[14px]">{trimDisplayName(hit.displayName)}</p>
       </div>
       {/* NOTE: if we want to include mints/creddd later */}
@@ -61,7 +55,7 @@ function Hit(props: HitProps) {
         ))}
       </div> */}
       <div className="col-span-1 pt-2">
-        {' '}
+        {/* TODO: add zora icon */}{' '}
         <a className="items-end" href={`https://warpcast.com/${hit.username}`} target="_blank">
           <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
         </a>
