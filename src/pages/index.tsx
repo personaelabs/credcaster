@@ -1,11 +1,10 @@
-import { InstantSearch, InfiniteHits } from 'react-instantsearch';
+import { InstantSearch, InfiniteHits, useInstantSearch } from 'react-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
 import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
 import { useEffect, useState } from 'react';
-import { CATEGORIES, Category } from '@/lib/traits';
 
 import mixpanel from 'mixpanel-browser';
 
@@ -21,7 +20,6 @@ const trimDisplayName = (displayName: string): string => {
 
 type HitProps = {
   hit: any;
-  category: Category;
   trait: string;
 };
 
@@ -75,8 +73,7 @@ function Hit(props: HitProps) {
 }
 
 export default function Home() {
-  // Category to search for
-  const [category, setCategory] = useState<Category>(CATEGORIES[0]);
+  const [isEmptyQuery, setIsEmptyQuery] = useState(true);
 
   // Trait to search for
   const [trait, setTrait] = useState('');
@@ -111,15 +108,24 @@ export default function Home() {
               searchClient={searchClient}
               indexName="traitcaster-mints"
             >
-              <RefinementList mixpanel={mixpanel} trait={trait} setTrait={setTrait} />
+              <RefinementList
+                mixpanel={mixpanel}
+                trait={trait}
+                setTrait={setTrait}
+                setIsEmptyQuery={setIsEmptyQuery}
+              />
               <div className="mt-4">
-                <InfiniteHits
-                  showPrevious={false}
-                  hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
-                  classNames={{
-                    item: 'mt-2',
-                  }}
-                ></InfiniteHits>
+                {isEmptyQuery ? (
+                  <></>
+                ) : (
+                  <InfiniteHits
+                    showPrevious={false}
+                    hitComponent={({ hit }) => <Hit hit={hit} trait={trait} />}
+                    classNames={{
+                      item: 'mt-2',
+                    }}
+                  ></InfiniteHits>
+                )}
               </div>
             </InstantSearch>
           </div>

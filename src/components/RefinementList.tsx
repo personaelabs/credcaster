@@ -73,16 +73,18 @@ type RefinementListProps = {
   mixpanel: any;
   trait: string;
   setTrait: (trait: string) => void;
+  setIsEmptyQuery: (isEmptyQuery: boolean) => void;
 };
 
 const RefinementList = (props: RefinementListProps) => {
   const { refresh, setIndexUiState, indexUiState } = useInstantSearch();
 
-  const { trait, setTrait } = props;
+  const { trait, setTrait, setIsEmptyQuery } = props;
 
   const _onTraitChange = (trait: string) => {
     props.mixpanel.track('trait select', { trait });
     setTrait(trait);
+    setIsEmptyQuery(false);
   };
 
   useEffect(() => {
