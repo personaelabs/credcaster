@@ -48,8 +48,6 @@ const TraitSelector = (props: TraitSelectorProps) => {
         <CustomSearchBox search={searchForItems}> </CustomSearchBox>
         <Separator />
         <div className="h-[240px] mt-4 overflow-y-auto">
-          {/* TODO: good items first, then everything else */}
-          {/* TODO: zora items labeled with [zora]? */}
           {items.map((item, i) => (
             <>
               <div
