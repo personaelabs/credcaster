@@ -44,9 +44,10 @@ function Hit(props: HitProps) {
           <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
         </Avatar>
       </div>
-      <div className="col-span-8 pt-2">
-        <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
+      <div className="col-span-8 pt-2 ml-1">
+        <p className="text-[14px]">{trimDisplayName(hit.displayName)}</p>
       </div>
+      {/* NOTE: if we want to include mints/creddd later */}
       {/* <div className="col-span-5">
         {matchedMints.map((mint: any, i: number) => (
           <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
