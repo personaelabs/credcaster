@@ -1,12 +1,13 @@
 import { InstantSearch, InfiniteHits } from 'react-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CATEGORIES, Category } from '@/lib/traits';
-import { toIPFSGatewayUrl, toZoraUrl } from '@/lib/utils';
+
+import * as amplitude from '@amplitude/analytics-browser';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
 
@@ -30,6 +31,10 @@ function Hit(props: HitProps) {
   const trait = props.trait;
 
   const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
+
+  const _onFarcasterClick = () => {
+    amplitude.track('Farcaster click', { username: hit.username, fid: hit.fid, trait });
+  };
 
   return (
     <Card className="grid grid-cols-10 bg-white p-2">
@@ -56,7 +61,12 @@ function Hit(props: HitProps) {
       </div> */}
       <div className="col-span-1 pt-2">
         {/* TODO: add zora icon */}{' '}
-        <a className="items-end" href={`https://warpcast.com/${hit.username}`} target="_blank">
+        <a
+          onClick={_onFarcasterClick}
+          className="items-end"
+          href={`https://warpcast.com/${hit.username}`}
+          target="_blank"
+        >
           <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
         </a>
       </div>
@@ -70,6 +80,12 @@ export default function Home() {
 
   // Trait to search for
   const [trait, setTrait] = useState('');
+
+  useEffect(() => {
+    if (process.env.AMPLITUDE_API_KEY) {
+      amplitude.init(process.env.AMPLITUDE_API_KEY);
+    }
+  }, []);
 
   return (
     <div className="mb-4 flex min-h-screen w-full justify-center bg-gray-50">
@@ -90,7 +106,7 @@ export default function Home() {
               searchClient={searchClient}
               indexName="traitcaster-mints"
             >
-              <RefinementList trait={trait} setTrait={setTrait} />
+              <RefinementList amplitude={amplitude} trait={trait} setTrait={setTrait} />
               <div className="mt-4">
                 <InfiniteHits
                   showPrevious={false}

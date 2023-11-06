@@ -70,6 +70,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
 };
 
 type RefinementListProps = {
+  amplitude: any;
   trait: string;
   setTrait: (trait: string) => void;
 };
@@ -78,6 +79,11 @@ const RefinementList = (props: RefinementListProps) => {
   const { refresh, setIndexUiState, indexUiState } = useInstantSearch();
 
   const { trait, setTrait } = props;
+
+  const _onTraitChange = (trait: string) => {
+    props.amplitude.track('Trait selected', { trait });
+    setTrait(trait);
+  };
 
   useEffect(() => {
     if (trait) {
@@ -95,7 +101,7 @@ const RefinementList = (props: RefinementListProps) => {
         <TraitSelector
           category={CATEGORIES[0]}
           trait={trait}
-          onTraitChange={setTrait}
+          onTraitChange={_onTraitChange}
         ></TraitSelector>
       </div>
     </>
