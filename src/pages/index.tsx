@@ -7,7 +7,7 @@ import RefinementList from '@/components/RefinementList';
 import { useEffect, useState } from 'react';
 import { CATEGORIES, Category } from '@/lib/traits';
 
-import * as amplitude from '@amplitude/analytics-browser';
+import mixpanel from 'mixpanel-browser';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
 
@@ -33,7 +33,7 @@ function Hit(props: HitProps) {
   const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
 
   const _onFarcasterClick = () => {
-    amplitude.track('Farcaster click', { username: hit.username, fid: hit.fid, trait });
+    mixpanel.track('fc click', { username: hit.username, fid: hit.fid, trait });
   };
 
   return (
@@ -82,8 +82,13 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   useEffect(() => {
-    if (process.env.AMPLITUDE_API_KEY) {
-      amplitude.init(process.env.AMPLITUDE_API_KEY);
+    if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) {
+      console.log('init mixpanel');
+      mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {
+        debug: true,
+        track_pageview: true,
+        persistence: 'localStorage',
+      });
     }
   }, []);
 
@@ -106,7 +111,7 @@ export default function Home() {
               searchClient={searchClient}
               indexName="traitcaster-mints"
             >
-              <RefinementList amplitude={amplitude} trait={trait} setTrait={setTrait} />
+              <RefinementList mixpanel={mixpanel} trait={trait} setTrait={setTrait} />
               <div className="mt-4">
                 <InfiniteHits
                   showPrevious={false}

@@ -77,7 +77,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
 };
 
 type RefinementListProps = {
-  amplitude: any;
+  mixpanel: any;
   trait: string;
   setTrait: (trait: string) => void;
 };
@@ -88,7 +88,7 @@ const RefinementList = (props: RefinementListProps) => {
   const { trait, setTrait } = props;
 
   const _onTraitChange = (trait: string) => {
-    props.amplitude.track('Trait selected', { trait });
+    props.mixpanel.track('trait select', { trait });
     setTrait(trait);
   };
 
