@@ -82,8 +82,11 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   useEffect(() => {
-    if (process.env.AMPLITUDE_API_KEY) {
-      amplitude.init(process.env.AMPLITUDE_API_KEY);
+    if (process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
+      console.log('Initializing amplitude');
+      amplitude.init(process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY, {
+        defaultTracking: true,
+      });
     }
   }, []);
 
