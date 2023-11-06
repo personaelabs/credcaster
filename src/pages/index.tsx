@@ -77,33 +77,38 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   return (
-    <main className="bg-white">
-      <div className="p-8">
-        <div className="flex justify-center mt-14">
-          <label className="text-xl">Mintcaster</label>
-        </div>
-        <div>
-          <p className="text-center mt-4">Find farcasters by Zora mint.</p>
-        </div>
-        <div className="mt-4 flex flex-col items-center">
-          <InstantSearch
-            initialUiState={undefined}
-            searchClient={searchClient}
-            indexName="traitcaster-mints"
-          >
-            <RefinementList trait={trait} setTrait={setTrait} />
-            <div className="mt-4">
-              <InfiniteHits
-                showPrevious={false}
-                hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
-                classNames={{
-                  item: 'mt-2',
-                }}
-              ></InfiniteHits>
+    <div className="mb-4 flex min-h-screen w-full justify-center bg-gray-50">
+      <main className="bg-white w-[550px] md:w-[650px]">
+        <div className="p-8">
+          <div className="grid grid-cols-10">
+            <div className="col-span-3">
+              <label className="text-xl">Mintcaster</label>
             </div>
-          </InstantSearch>
+            <div className="text-right col-span-7">
+              <p>Find farcasters by Zora mint.</p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-col ">
+            <InstantSearch
+              initialUiState={undefined}
+              searchClient={searchClient}
+              indexName="traitcaster-mints"
+            >
+              <RefinementList trait={trait} setTrait={setTrait} />
+              <div className="mt-4">
+                <InfiniteHits
+                  showPrevious={false}
+                  hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
+                  classNames={{
+                    item: 'mt-2',
+                  }}
+                ></InfiniteHits>
+              </div>
+            </InstantSearch>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
