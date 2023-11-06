@@ -47,6 +47,13 @@ const TraitSelector = (props: TraitSelectorProps) => {
         <h4 className="mt-4 mb-4 text-md font-medium leading-none">Choose mint</h4>
         <CustomSearchBox search={searchForItems}> </CustomSearchBox>
         <Separator />
+        <p className="text-xs">
+          {"Can't find a mint? Submit a request "}
+          <a className="underline" href="https://forms.gle/pfTx8GoYt16x7B2Z8" target="_blank">
+            here
+          </a>
+          .
+        </p>
         <div className="h-[240px] mt-4 overflow-y-auto">
           {items.map((item, i) => (
             <>
