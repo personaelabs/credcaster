@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
 import { useState } from 'react';
-import { Separator } from '@/components/ui/separator';
 import { CATEGORIES, Category } from '@/lib/traits';
 import { toIPFSGatewayUrl, toZoraUrl } from '@/lib/utils';
 
@@ -33,40 +32,34 @@ function Hit(props: HitProps) {
   const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex gap-8 flex-row justify-between">
-          <div className="flex items-center">
-            <Avatar className="mr-4">
-              <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
-            </Avatar>
-            <p className="text-[18px]">{trimDisplayName(hit.displayName)}</p>
-          </div>
-          <div className="w-1/5 flex justify-end">
-            <a href={`https://warpcast.com/${hit.username}`} target="_blank">
-              <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>
-            </a>
-          </div>
-        </CardTitle>
-        <CardDescription>
-          <div className="p-4 grid grid-cols-3 gap-4">
-            {matchedMints.map((mint: any, i: number) => (
-              <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
-                <Image
-                  width={60}
-                  height={60}
-                  src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
-                  alt="avatar image"
-                ></Image>
-              </a>
-            ))}
-          </div>
-          <Separator></Separator>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="gap-8">
-        <p className="mt-4 text-slate-900 text-opacity-70">{hit.bio}</p>
-      </CardContent>
+    <Card className="grid grid-cols-10 bg-white p-2">
+      <div className="col-span-2 sm:col-span-1">
+        <Avatar className="mr-4">
+          <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
+        </Avatar>
+      </div>
+      <div className="col-span-7 sm:col-span-8 pt-2 ml-1">
+        <p className="text-[14px]">{trimDisplayName(hit.displayName)}</p>
+      </div>
+      {/* NOTE: if we want to include mints/creddd later */}
+      {/* <div className="col-span-5">
+        {matchedMints.map((mint: any, i: number) => (
+          <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
+            <Image
+              width={60}
+              height={60}
+              src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
+              alt="avatar image"
+            ></Image>
+          </a>
+        ))}
+      </div> */}
+      <div className="col-span-1 pt-2">
+        {/* TODO: add zora icon */}{' '}
+        <a className="items-end" href={`https://warpcast.com/${hit.username}`} target="_blank">
+          <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
+        </a>
+      </div>
     </Card>
   );
 }
@@ -79,35 +72,38 @@ export default function Home() {
   const [trait, setTrait] = useState('');
 
   return (
-    <main className="bg-[#EFEBEB]">
-      <div className="p-8">
-        <div className="flex justify-center mt-14">
-          <p className="text-indigo-500 text-3xl font-bold font-['Inter']">Traitcaster</p>
-        </div>
-        <div className="mt-4 flex flex-col items-center">
-          <InstantSearch
-            initialUiState={undefined}
-            searchClient={searchClient}
-            indexName="traitcaster-mints"
-          >
-            <RefinementList
-              category={category}
-              setCategory={setCategory}
-              trait={trait}
-              setTrait={setTrait}
-            />
-            <div className="mt-4 w-[350px] md:w-[450px]">
-              <InfiniteHits
-                showPrevious={false}
-                hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
-                classNames={{
-                  item: 'mt-4 ',
-                }}
-              ></InfiniteHits>
+    <div className="mb-4 flex min-h-screen w-full justify-center bg-gray-50">
+      <main className="bg-white w-[550px] md:w-[650px]">
+        <div className="p-8">
+          <div className="grid grid-cols-10">
+            <div className="col-span-3">
+              <label className="text-xl">Mintcaster</label>
             </div>
-          </InstantSearch>
+            <div className="text-right col-span-7">
+              <p>Find farcasters by Zora mint.</p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-col ">
+            <InstantSearch
+              initialUiState={undefined}
+              searchClient={searchClient}
+              indexName="traitcaster-mints"
+            >
+              <RefinementList trait={trait} setTrait={setTrait} />
+              <div className="mt-4">
+                <InfiniteHits
+                  showPrevious={false}
+                  hitComponent={({ hit }) => <Hit hit={hit} category={category} trait={trait} />}
+                  classNames={{
+                    item: 'mt-2',
+                  }}
+                ></InfiniteHits>
+              </div>
+            </InstantSearch>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
