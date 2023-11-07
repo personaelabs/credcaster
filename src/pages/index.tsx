@@ -44,21 +44,7 @@ function Hit(props: HitProps) {
       <div className="col-span-7 sm:col-span-8 pt-2 ml-1">
         <p className="text-[14px]">{trimDisplayName(hit.displayName)}</p>
       </div>
-      {/* NOTE: if we want to include mints/creddd later */}
-      {/* <div className="col-span-5">
-        {matchedMints.map((mint: any, i: number) => (
-          <a href={toZoraUrl(mint.contractAddress, mint.tokenId)} key={i} target="_blank">
-            <Image
-              width={60}
-              height={60}
-              src={toIPFSGatewayUrl(mint.image.replace('ipfs://', ''))}
-              alt="avatar image"
-            ></Image>
-          </a>
-        ))}
-      </div> */}
       <div className="col-span-1 pt-2">
-        {/* TODO: add zora icon */}{' '}
         <a
           onClick={_onFarcasterClick}
           className="items-end"
