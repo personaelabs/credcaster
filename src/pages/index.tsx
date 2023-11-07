@@ -81,10 +81,10 @@ export default function Home() {
         <div className="p-8">
           <div className="grid grid-cols-10">
             <div className="col-span-3">
-              <label className="text-xl">Mintcaster</label>
+              <label className="text-xl">Credcaster</label>
             </div>
             <div className="text-right col-span-7">
-              <p>Find farcasters by Zora mint.</p>
+              <p>Find farcasters by creddd</p>
             </div>
           </div>
 
@@ -104,6 +104,7 @@ export default function Home() {
                 {isEmptyQuery ? (
                   <></>
                 ) : (
+                  // TODO: may want to conditionally use InfiniteHits only if there isn't a 'special' group selected
                   <InfiniteHits
                     showPrevious={false}
                     hitComponent={({ hit }) => <Hit hit={hit} trait={trait} />}
