@@ -74,7 +74,7 @@ export default function Home() {
     }
 
     getCK2019Data().catch(console.error);
-  });
+  }, []);
 
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) {
