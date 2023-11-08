@@ -10,18 +10,32 @@ import { Checkbox } from './ui/checkbox';
 type TraitSelectorProps = {
   category: Category;
   onTraitChange: (trait: string) => void;
+  setIsEmptyQuery: (isEmptyQuery: boolean) => void;
   trait: string;
 };
 
 const TraitSelector = (props: TraitSelectorProps) => {
-  const { category, trait, onTraitChange } = props;
+  const { category, trait, onTraitChange, setIsEmptyQuery } = props;
 
   const [open, setOpen] = useState(false);
+  const [kittyChecked, setKittyChecked] = useState(false);
+
   const { items, refine, searchForItems } = useRefinementList({
     attribute: category.key,
     limit: 50, // TODO: Add pagination
     showMoreLimit: 51,
   });
+
+  const checkboxChange = (checked: boolean) => {
+    // don't allow filter by both (for now)
+    if (checked) {
+      onTraitChange('');
+      setIsEmptyQuery(true);
+      setKittyChecked(true);
+    } else {
+      setKittyChecked(false);
+    }
+  };
 
   useEffect(() => {
     if (trait) {
@@ -33,7 +47,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
   return (
     <>
       <div className="flex items-center space-x-2">
-        <Checkbox id="ck-2019" />
+        <Checkbox checked={kittyChecked} onCheckedChange={checkboxChange} id="ck-2019" />
         <label
           htmlFor="ck-2019"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -42,7 +56,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
         </label>
       </div>
 
-      <div className="mt-4 mb-4">OR</div>
+      <div className="mt-2 mb-2">OR</div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
@@ -59,6 +73,15 @@ const TraitSelector = (props: TraitSelectorProps) => {
             </Select>
           </div>
         </DialogTrigger>
+        <div className="mt-2">
+          <p className="text-xs ">
+            {'Want to filter by something else? Submit a request '}
+            <a className="underline" href="https://forms.gle/kaHhgW3dVbPJzDue8" target="_blank">
+              here
+            </a>
+            .
+          </p>
+        </div>
         <DialogContent className="p-6 w-[350px] rounded-xl">
           <h4 className="mt-4 mb-4 text-md font-medium leading-none">Choose Zora mint</h4>
           <CustomSearchBox search={searchForItems}> </CustomSearchBox>
@@ -77,6 +100,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
                   key={i}
                   className="hover:bg-gray-50 hover:cursor-pointer p-4"
                   onClick={() => {
+                    setKittyChecked(false);
                     onTraitChange(item.label);
                     setOpen(false);
                   }}
@@ -128,6 +152,7 @@ const RefinementList = (props: RefinementListProps) => {
           category={CATEGORIES[0]}
           trait={trait}
           onTraitChange={_onTraitChange}
+          setIsEmptyQuery={setIsEmptyQuery}
         ></TraitSelector>
       </div>
     </>

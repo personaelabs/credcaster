@@ -84,7 +84,7 @@ export default function Home() {
               <label className="text-xl">Credcaster</label>
             </div>
             <div className="text-right col-span-7">
-              <p>Find farcasters by creddd</p>
+              <p>Find farcasters by Eth history</p>
             </div>
           </div>
 
