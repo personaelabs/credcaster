@@ -61,7 +61,7 @@ const TraitSelector = (props: TraitSelectorProps) => {
           htmlFor="ck-2019"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Owned a CryptoKitty pre-2019
+          Pre-2019 CryptoKitty owner
         </label>
       </div>
 
