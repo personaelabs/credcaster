@@ -6,6 +6,8 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import RefinementList from '@/components/RefinementList';
 import { useEffect, useState } from 'react';
 
+import axios from 'axios';
+
 import mixpanel from 'mixpanel-browser';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
@@ -25,10 +27,7 @@ type HitProps = {
 
 function Hit(props: HitProps) {
   const hit = props.hit;
-  const mints = hit.mints;
   const trait = props.trait;
-
-  const matchedMints = mints.filter((mint: any) => mint.title.trimStart().trimEnd() === trait);
 
   const _onFarcasterClick = () => {
     mixpanel.track('fc click', { username: hit.username, fid: hit.fid, trait });
@@ -61,8 +60,21 @@ function Hit(props: HitProps) {
 export default function Home() {
   const [isEmptyQuery, setIsEmptyQuery] = useState(true);
 
+  const [isKittyChecked, setKittyChecked] = useState(false);
+
+  const [kittyData, setKittyData] = useState([]);
+
   // Trait to search for
   const [trait, setTrait] = useState('');
+
+  useEffect(() => {
+    async function getCK2019Data() {
+      const { data } = await axios.get('/CryptoKittiesPre2019.json');
+      setKittyData(data);
+    }
+
+    getCK2019Data().catch(console.error);
+  });
 
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) {
@@ -99,19 +111,32 @@ export default function Home() {
                 trait={trait}
                 setTrait={setTrait}
                 setIsEmptyQuery={setIsEmptyQuery}
+                setKittyChecked={setKittyChecked}
               />
               <div className="mt-4">
-                {isEmptyQuery ? (
-                  <></>
+                {isKittyChecked ? (
+                  <>
+                    {kittyData.map((kittyHit, i) => (
+                      <div key={i} className="mt-2">
+                        <Hit hit={kittyHit} trait="kitty"></Hit>
+                      </div>
+                    ))}
+                  </>
                 ) : (
-                  // TODO: may want to conditionally use InfiniteHits only if there isn't a 'special' group selected
-                  <InfiniteHits
-                    showPrevious={false}
-                    hitComponent={({ hit }) => <Hit hit={hit} trait={trait} />}
-                    classNames={{
-                      item: 'mt-2',
-                    }}
-                  ></InfiniteHits>
+                  <>
+                    {isEmptyQuery ? (
+                      <></>
+                    ) : (
+                      // TODO: may want to conditionally use InfiniteHits only if there isn't a 'special' group selected
+                      <InfiniteHits
+                        showPrevious={false}
+                        hitComponent={({ hit }) => <Hit hit={hit} trait={trait} />}
+                        classNames={{
+                          item: 'mt-2',
+                        }}
+                      ></InfiniteHits>
+                    )}
+                  </>
                 )}
               </div>
             </InstantSearch>

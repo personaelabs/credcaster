@@ -8,17 +8,21 @@ import { CATEGORIES, Category } from '@/lib/traits';
 import { Checkbox } from './ui/checkbox';
 
 type TraitSelectorProps = {
+  mixpanel: any;
   category: Category;
   onTraitChange: (trait: string) => void;
+
   setIsEmptyQuery: (isEmptyQuery: boolean) => void;
+  setKittyChecked: (checked: boolean) => void;
+
   trait: string;
 };
 
 const TraitSelector = (props: TraitSelectorProps) => {
-  const { category, trait, onTraitChange, setIsEmptyQuery } = props;
+  const { category, trait, mixpanel, onTraitChange, setIsEmptyQuery, setKittyChecked } = props;
 
   const [open, setOpen] = useState(false);
-  const [kittyChecked, setKittyChecked] = useState(false);
+  const [kittyChecked, _setKittyChecked] = useState(false);
 
   const { items, refine, searchForItems } = useRefinementList({
     attribute: category.key,
@@ -31,9 +35,14 @@ const TraitSelector = (props: TraitSelectorProps) => {
     if (checked) {
       onTraitChange('');
       setIsEmptyQuery(true);
+
+      // TODO: refactor! this is too janky. should be a single function call
       setKittyChecked(true);
+      _setKittyChecked(true);
+      mixpanel.track('cryptokitty-2019 filter');
     } else {
       setKittyChecked(false);
+      _setKittyChecked(false);
     }
   };
 
@@ -100,7 +109,9 @@ const TraitSelector = (props: TraitSelectorProps) => {
                   key={i}
                   className="hover:bg-gray-50 hover:cursor-pointer p-4"
                   onClick={() => {
+                    _setKittyChecked(false);
                     setKittyChecked(false);
+
                     onTraitChange(item.label);
                     setOpen(false);
                   }}
@@ -122,12 +133,14 @@ type RefinementListProps = {
   trait: string;
   setTrait: (trait: string) => void;
   setIsEmptyQuery: (isEmptyQuery: boolean) => void;
+
+  setKittyChecked: (checked: boolean) => void;
 };
 
 const RefinementList = (props: RefinementListProps) => {
   const { refresh, setIndexUiState, indexUiState } = useInstantSearch();
 
-  const { trait, setTrait, setIsEmptyQuery } = props;
+  const { trait, setTrait, setIsEmptyQuery, setKittyChecked } = props;
 
   const _onTraitChange = (trait: string) => {
     props.mixpanel.track('trait select', { trait });
@@ -149,10 +162,12 @@ const RefinementList = (props: RefinementListProps) => {
     <>
       <div className="mt-4">
         <TraitSelector
+          mixpanel={props.mixpanel}
           category={CATEGORIES[0]}
           trait={trait}
           onTraitChange={_onTraitChange}
           setIsEmptyQuery={setIsEmptyQuery}
+          setKittyChecked={setKittyChecked}
         ></TraitSelector>
       </div>
     </>
