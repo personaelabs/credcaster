@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import mixpanel from 'mixpanel-browser';
+import { Button } from '@/components/ui/button';
 
 const searchClient = algoliasearch('OBLCAWFSD4', 'bfff463d73b318c23cb6e88f22b255a9');
 
@@ -34,23 +35,24 @@ function Hit(props: HitProps) {
   };
 
   return (
-    <Card className="grid grid-cols-10 bg-white p-2">
-      <div className="col-span-2 sm:col-span-1">
+    <Card className="grid grid-cols-8 bg-white p-2">
+      <div className="col-span-1">
         <Avatar className="mr-4">
           <AvatarImage src={hit.pfp} alt={hit.username}></AvatarImage>
         </Avatar>
       </div>
-      <div className="col-span-7 sm:col-span-8 pt-2 ml-1">
+      <div className="col-span-5 md:col-span-6 pt-2 ml-1">
         <p className="text-[14px]">{trimDisplayName(hit.displayName)}</p>
       </div>
-      <div className="col-span-1 pt-2">
+      <div className="col-span-1">
         <a
-          onClick={_onFarcasterClick}
-          className="items-end"
           href={`https://warpcast.com/${hit.username}`}
           target="_blank"
+          onClick={_onFarcasterClick}
         >
-          <Image src="/warpcast.svg" width={30} height={30} alt="warpcast icon"></Image>{' '}
+          <Button size={'sm'} className="bg-[#7c65c1]">
+            Follow
+          </Button>
         </a>
       </div>
     </Card>
